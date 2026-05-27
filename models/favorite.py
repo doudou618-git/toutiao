@@ -1,6 +1,4 @@
-from datetime import datetime, timezone
-
-from sqlalchemy import UniqueConstraint, Index, Integer, ForeignKey, DateTime
+from sqlalchemy import UniqueConstraint, Index, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from models import Base
@@ -26,3 +24,4 @@ class Favorite(Base):
 
     def __repr__(self):
         return f"<Favorite(id={self.id}, user_id={self.user_id}, news_id={self.news_id})>"
+

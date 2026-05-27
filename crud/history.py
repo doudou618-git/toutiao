@@ -16,13 +16,13 @@ async def add_history(db: AsyncSession, user_id: int, news_id: int):
     existing_history = result.scalar_one_or_none()
     if existing_history:
         existing_history.view_time = datetime.now()
-        await db.commit()
+        await db.flush()
         await db.refresh(existing_history)
         return existing_history
     else:
         history = History(user_id=user_id, news_id=news_id)
         db.add(history)
-        await db.commit()
+        await db.flush()
         await db.refresh(history)
         return history
 
@@ -50,7 +50,7 @@ async def delete_history(db: AsyncSession, user_id: int, history_id: int):
     """
     query = delete(History).where(History.user_id == user_id, History.id == history_id)
     result = await db.execute(query)
-    await db.commit()
+    await db.flush()
 
     return result.rowcount > 0
 
@@ -61,6 +61,6 @@ async def clear_history(db: AsyncSession, user_id: int):
     """
     query = delete(History).where(History.user_id == user_id)
     result = await db.execute(query)
-    await db.commit()
+    await db.flush()
 
     return result.rowcount or 0

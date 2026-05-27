@@ -24,7 +24,7 @@ async def add_news_favorite(
 ):
     favorite = Favorite(user_id=user_id, news_id=news_id)
     db.add(favorite)
-    await db.commit()
+    await db.flush()
     await db.refresh(favorite)
     return favorite
 
@@ -37,7 +37,7 @@ async def remove_news_favorite(
 ):
     stmt = delete(Favorite).where(Favorite.user_id == user_id , Favorite.news_id == news_id)
     result = await db.execute(stmt)
-    await db.commit()
+    await db.flush()
     return result.rowcount > 0
 
 #总量加收藏的新闻列表
@@ -73,7 +73,6 @@ async def remove_all_favorite(
 ):
     stmt = delete(Favorite).where(Favorite.user_id == user_id)
     result = await db.execute(stmt)
-    await db.commit()
-    #返回一个删除的数据
+    await db.flush()
     return result.rowcount or 0
 
