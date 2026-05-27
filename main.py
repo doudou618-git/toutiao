@@ -1,13 +1,16 @@
-from fastapi import FastAPI
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from fastapi import FastAPI, Request
 from routers import news, users, favorite, history
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi.errors import RateLimitExceeded
 
 from utils.exception_handlers import register_exception_handlers
 from utils.logger import get_logger
 from utils.rate_limiter import limiter
-from slowapi.errors import RateLimitExceeded
-from fastapi import Request
-
 
 
 logger = get_logger("main")
@@ -30,9 +33,11 @@ app.add_exception_handler(RateLimitExceeded, lambda req, exc: {
 
 register_exception_handlers(app)
 
+# CORS 配置（从环境变量读取允许的来源）
+allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "*"],
+    allow_origins=[origin.strip() for origin in allowed_origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

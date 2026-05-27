@@ -1,11 +1,12 @@
 import json
+import os
 from typing import Any
 
 import redis.asyncio as redis
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-REDIS_DB = 0
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", "6379"))
+REDIS_DB = int(os.environ.get("REDIS_DB", "0"))
 
 
 #创建Redis的连接对象

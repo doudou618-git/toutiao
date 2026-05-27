@@ -1,3 +1,4 @@
+import os
 import traceback
 
 from fastapi import HTTPException, Request
@@ -5,9 +6,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette import status
 
-# 开发模式: 返回详细错误信息
-# 生产模式: 返回简化错误信息
-DEBUG_MODE = True  # 教学项目保持开启
+# 开发模式: 返回详细错误信息（从环境变量读取，默认关闭）
+DEBUG_MODE = os.environ.get("DEBUG_MODE", "false").lower() == "true"
 
 async def http_exception_handler(request: Request, exc: HTTPException):
     """

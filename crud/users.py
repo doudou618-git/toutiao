@@ -1,11 +1,8 @@
-import uuid
-from datetime import datetime, timedelta
-
 from fastapi import HTTPException
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.users import User, UserToken
+from models.users import User
 from schemas.users import UserRequest, UserUpdateRequest
 
 from utils.jwt_handler import hash_password, verify_password, create_access_token, create_refresh_token, verify_token
@@ -37,23 +34,6 @@ async def create_user(db : AsyncSession, user_data : UserRequest):
      await db.refresh(user)
      return user
 
-# #生成token
-# #生成Token + 设置过期时间 +查询数据库当前用户是否有token  有就更新，没有就添加
-# async def create_token(db : AsyncSession, user_id: int):
-#      token = str(uuid.uuid4())
-#      expire_at = datetime.now() + timedelta(days=7)
-#      query = select(UserToken).where(UserToken.user_id == user_id)
-#      result = await db.execute(query)
-#      user_token = result.scalar_one_or_none()
-#      if user_token:
-#           user_token.token = token
-#           user_token.expire_at = expire_at
-#      else:
-#           user_token = UserToken(user_id=user_id, token=token, expires_at=expire_at)
-#           db.add(user_token)
-#           await db.commit()
-#      return token
-
 
 async def create_tokens(db: AsyncSession, user: User):
      """
@@ -83,19 +63,6 @@ async def authenticate_user(db : AsyncSession, username: str, password: str):
      if not verify_password(password, user.password):
           return None
      return user
-
-
-# async def get_user_by_token(db : AsyncSession, token: str):
-#      query = select(UserToken).where(UserToken.token == token)
-#      result = await db.execute(query)
-#      db_token = result.scalar_one_or_none()
-#
-#      if not db_token or db_token.expires_at < datetime.now():
-#           return None
-#
-#      query = select(User).where(User.id == db_token.user_id)
-#      result = await db.execute(query)
-#      return result.scalar_one_or_none()
 
 
 async def refresh_access_token(db: AsyncSession, refresh_token: str):

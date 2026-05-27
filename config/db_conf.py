@@ -1,7 +1,9 @@
+import os
+
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
 
-# 数据库URL
-ASYNC_DATABASE_URL = "mysql+aiomysql://root:123456@localhost:3306/news_app?charset=utf8mb4"
+# 数据库URL（从环境变量读取）
+ASYNC_DATABASE_URL = os.environ.get("DATABASE_URL", "mysql+aiomysql://root:123456@localhost:3306/news_app?charset=utf8mb4")
 
 # 创建异步引擎
 async_engine = create_async_engine(
