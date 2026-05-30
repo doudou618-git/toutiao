@@ -34,3 +34,9 @@ logs/
 # 数据库迁移（如需版本控制可移除此行）
 # alembic/
 # alembic.ini
+
+# 前端
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.local
